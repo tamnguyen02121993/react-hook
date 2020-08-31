@@ -4,7 +4,9 @@ import ColorBox from "./components/ColorBox";
 import TodoList from "./components/TodoList";
 import TodoForm from "./components/TodoForm";
 import PostList from "./components/PostList";
-
+import Pagination from "./components/Pagination";
+import queryString from "query-string";
+import PostFilterForm from "./components/PostFilterForm";
 function App() {
   const [todoList, setTodoList] = useState([
     { id: 1, title: "I love easy frontend! 😍" },
@@ -13,6 +15,17 @@ function App() {
   ]);
 
   const [posts, setPosts] = useState([]);
+
+  const [pagination, setPagination] = useState({
+    _page: 1,
+    _limit: 10,
+    _totalRows: 1,
+  });
+
+  const [filter, setFilter] = useState({
+    _page: 1,
+    _limit: 10,
+  });
 
   function handleTodoClick(todo) {
     const newTodoList = [...todoList];
@@ -31,19 +44,35 @@ function App() {
     setTodoList(newTodoList);
   }
 
+  function handlePageChange(newPage) {
+    setFilter({
+      ...filter,
+      _page: newPage,
+    });
+  }
+
+  function handleFilterChange(filter) {
+    setFilter({
+      ...filter,
+      _page: 1,
+      title_like: filter.searchTerm,
+    });
+  }
+
   useEffect(() => {
     async function fetchData() {
-      const requestUrl =
-        "http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1";
+      const querParams = queryString.stringify(filter);
+      const requestUrl = `http://js-post-api.herokuapp.com/api/posts?${querParams}`;
 
       const response = await fetch(requestUrl);
       const responseJson = await response.json();
 
       setPosts(responseJson.data);
+      setPagination(responseJson.pagination);
     }
 
     fetchData();
-  }, []);
+  }, [filter]);
 
   return (
     <div className="app">
@@ -53,7 +82,10 @@ function App() {
 
       <TodoList todos={todoList} onTodoClick={handleTodoClick} /> */}
 
+      <PostFilterForm onSubmit={handleFilterChange} />
+
       <PostList posts={posts} />
+      <Pagination onPageChange={handlePageChange} pagination={pagination} />
     </div>
   );
 }
