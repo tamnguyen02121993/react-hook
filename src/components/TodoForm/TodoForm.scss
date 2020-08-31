@@ -1,0 +1,17 @@
+.todo-form {
+    margin-top: 20px;
+
+    & form {
+        & input {
+            width: 33%;
+            height: 20px;
+            border: 1px solid deeppink;
+
+            &:hover {
+                outline: 1px solid deeppink;
+            }
+
+
+        }
+    }
+}

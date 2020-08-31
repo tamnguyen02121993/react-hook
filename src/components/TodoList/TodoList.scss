@@ -1,0 +1,15 @@
+.todo-list {
+    & ul {
+        list-style: none;
+
+        padding: 0px;
+        margin: 0px;
+
+        line-height: 3rem;
+
+        & li:hover {
+            color: deeppink;
+            cursor: pointer;
+        }
+    }
+}
